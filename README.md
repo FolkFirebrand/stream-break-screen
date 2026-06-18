@@ -14,6 +14,7 @@ A **free, no-install browser overlay** for Twitch streamers — drop it straight
 - 🎨 **5 built-in themes** — Cream & Gold, Neon Cyber, Dark Nebula, Emerald Glow, Solar Ember
 - ✨ **Ambient particle effects** — glowing embers/dust and a digital grid backdrop
 - ⚙️ **Live settings panel** — tweak everything without touching a file (press `C` or click the gear ⚙️)
+- 🖱️ **Interact-friendly** — control the overlay live from inside OBS or Streamlabs using the built-in Interact window
 - 💾 **Persistent settings** — your changes are saved in the browser and reload automatically
 - 🖥️ **OBS/Streamlabs compatible** — fully tested in Streamlabs Desktop's Chromium Embedded Framework
 
@@ -88,6 +89,24 @@ Click **Apply & Save Settings** to persist your changes across sessions.
 
 ---
 
+## 🖱️ Using Interact (Live Control from OBS / Streamlabs)
+
+You don't need to alt-tab out of your stream to change settings. Both OBS Studio and Streamlabs Desktop have a built-in **Interact** feature that lets you click inside the browser source in real time.
+
+**In Streamlabs Desktop:**
+1. Right-click the Browser Source in your source list
+2. Select **Interact**
+3. The overlay opens in an interactive window — press **`C`** or click the **⚙️** gear icon to open the settings panel
+
+**In OBS Studio:**
+1. Right-click the Browser Source in your source list
+2. Select **Interact**
+3. Same as above — press **`C`** or click the gear to open settings
+
+> **Note:** Native `<select>` dropdowns won't open in the Interact window due to a CEF limitation. This overlay uses custom-built dropdowns that work around this automatically — all controls function as expected.
+
+---
+
 ## 🎨 Themes
 
 | Name | Palette |
@@ -103,13 +122,13 @@ Click **Apply & Save Settings** to persist your changes across sessions.
 ## 📂 File Structure
 
 ```
-twitch-break-screen/
+stream-break-screen/
 ├── index.html      ← The overlay (open this in Streamlabs/OBS)
 ├── app.js          ← All logic: physics, timer, carousel, settings
 ├── style.css       ← All styles and theme definitions
 ├── config.js       ← ⭐ Your personal settings (edit this!)
 ├── FFNEW.png       ← Default bouncing logo (replace with your own)
-└── LICENSE         ← MIT — free to use and modify
+└── LICENSE         ← GNU GPL v3 — free to use and modify
 ```
 
 ---
