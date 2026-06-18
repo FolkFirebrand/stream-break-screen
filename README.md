@@ -1,6 +1,6 @@
 # 🎮 Stream Break Screen Overlay
 
-A **free, no-install browser overlay** for Twitch streamers — drop it straight into Streamlabs Desktop or OBS Studio as a Browser Source. No server, no account, no framework. Just open `index.html`.
+A **free, no-install browser overlay** for live streamers — drop it straight into Streamlabs Desktop or OBS Studio as a Browser Source. No server, no account, no framework. Just open `index.html`.
 
 > **Like this? [Buy me a Ko-fi ☕](https://ko-fi.com/folkfirebrand)** — it helps me keep building free tools for the community!
 
@@ -15,7 +15,6 @@ A **free, no-install browser overlay** for Twitch streamers — drop it straight
 - ✨ **Ambient particle effects** — glowing embers/dust and a digital grid backdrop
 - ⚙️ **Live settings panel** — tweak everything without touching a file (press `C` or click the gear ⚙️)
 - 🖱️ **Interact-friendly** — control the overlay live from inside OBS or Streamlabs using the built-in Interact window
-- 💾 **Persistent settings** — your changes are saved in the browser and reload automatically
 - 🖥️ **OBS/Streamlabs compatible** — fully tested in Streamlabs Desktop's Chromium Embedded Framework
 
 ---
