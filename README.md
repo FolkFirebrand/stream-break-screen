@@ -28,15 +28,17 @@ Click **Code → Download ZIP** on GitHub, then unzip the folder anywhere on you
 
 ---
 
-### Step 2 — Open in Browser to Configure
+### Step 2 — Configure Your Settings
 
-Double-click `index.html` to open it in Chrome or Edge. This lets you:
+You have two ways to set up your defaults before adding the source to your stream software:
 
-- Press **`C`** or click the **⚙️** gear icon to open the Settings panel
-- Set your break message, timer duration, social handles, theme, and logo
-- Click **Apply & Save Settings** — your choices are saved and will persist automatically
+**Option A — Edit `config.js` directly (recommended for initial setup)**  
+Open `config.js` in any text editor (Notepad works) and fill in your details — social handles, break message, timer duration, theme, and logo filename. These settings are loaded every time the overlay starts. See the [Advanced: Edit config.js Directly](#️-advanced-edit-configjs-directly) section below for the full reference.
 
-> You only need the browser open for this setup step. Once your settings are saved, you're done here.
+**Option B — Use the Interact window in your stream software**  
+Once you've added the Browser Source (Step 3), right-click it and choose **Interact**. From there, press **`C`** or click the ⚙️ gear icon to open the live Settings panel, make your changes, and click **Apply & Save Settings**.
+
+> **⚠️ Important:** Opening `index.html` in Chrome or Edge and saving settings there will **not** carry those settings over to OBS or Streamlabs. Each environment (your regular browser and the stream software's built-in browser) stores its settings separately. Use `config.js` or the **Interact** window to configure the overlay as it will appear on stream.
 
 ---
 
@@ -47,7 +49,7 @@ In **Streamlabs Desktop** or **OBS Studio**, add a new Browser Source with these
 | Setting | Value |
 |---|---|
 | **Source type** | Browser Source |
-| **URL / Local file** | Browse to `index.html` |
+| **URL / Local file** | Copy full path to saved `index.html` |
 | **Width** | `1920` |
 | **Height** | `1080` |
 | **Custom CSS** | *(leave empty)* |
@@ -160,17 +162,20 @@ stream-break-screen/
 
 ## 🛠️ Tips & Troubleshooting
 
-**Settings panel dropdowns don't open in Streamlabs "Interact" window?**
+**I saved settings in Chrome/Edge but they didn't show up in OBS/Streamlabs?**  
+This is expected behaviour — your regular browser and the stream software's built-in browser each have their own isolated storage. Settings saved in Chrome stay in Chrome; they won't transfer over. To configure the overlay for stream, edit `config.js` directly or use the **Interact** window inside OBS/Streamlabs.
+
+**Settings panel dropdowns don't open in Streamlabs "Interact" window?**  
 This is a known Chromium Embedded Framework (CEF) limitation. Use the overlay's **custom dropdown** UI — it works around this automatically.
 
-**The timer resets when I switch scenes?**
+**The timer resets when I switch scenes?**  
 Enable **"Refresh browser when scene becomes active"** in Streamlabs/OBS, or use the **Start** button inside the settings panel to begin the countdown manually after switching to the scene.
 
-**My image looks blurry?**
+**My image looks blurry?**  
 Use a PNG with a transparent background for the cleanest result. A square image around 600×600px or larger works best.
 
-**How do I reset all my saved settings?**
-In the browser's developer console (F12), run: `localStorage.removeItem('twitch_break_screen_settings')` then refresh.
+**How do I reset all my saved settings?**  
+In the stream software's Interact window, open the browser developer console (F12) and run: `localStorage.removeItem('twitch_break_screen_settings')` then refresh.
 
 ---
 
