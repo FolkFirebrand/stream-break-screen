@@ -718,6 +718,68 @@ body {
     object-fit: contain;
 }
 
+.image-dropzone {
+    position: relative;
+    cursor: copy;
+}
+
+.image-preview.drag-over {
+    border-color: var(--accent-cyan);
+    border-style: solid;
+    box-shadow: 0 0 12px rgba(0, 243, 255, 0.35);
+    background: rgba(0, 243, 255, 0.08);
+}
+
+/* "Drop image" affordance shown only while dragging a file over the box.
+   Implemented as ::after so it survives the preview img being replaced. */
+.image-dropzone.drag-over::after {
+    content: "Drop image";
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.6rem;
+    font-weight: 600;
+    color: var(--accent-cyan);
+    background: rgba(10, 6, 18, 0.65);
+    pointer-events: none;
+}
+
+.image-drop-hint {
+    margin: 12px 0 8px;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.image-url-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.image-url-row input[type="text"] {
+    flex: 1;
+    min-width: 0;
+}
+
+.image-url-row .btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.image-url-msg {
+    margin: 8px 0 0;
+    font-size: 0.7rem;
+    line-height: 1.4;
+    color: var(--text-muted);
+}
+
+.image-url-msg.is-error {
+    color: #ff4a4a;
+}
+
 .preview-text {
     font-size: 0.55rem;
     color: var(--text-muted);

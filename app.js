@@ -16,10 +16,10 @@ const DEFAULT_SETTINGS = {
     statusText: "BE RIGHT BACK",
     statusSubtext: "Taking a quick 5 minute break! Grab a drink and settle in.",
     socials: {
-        twitch: "FolkFirebrand",
+        twitch: "",
         twitter: "",
-        instagram: "@folkfirebrand",
-        youtube: "@folkfirebrand",
+        instagram: "",
+        youtube: "",
         discord: "",
         kofi: "",
         patreon: "",
@@ -91,7 +91,9 @@ const settingsPanel = document.getElementById('settings-panel');
 const settingsToggleBtn = document.getElementById('settings-toggle');
 const settingsCloseBtn = document.getElementById('settings-close');
 const btnSaveSettings = document.getElementById('btn-save-settings');
-const logoFileInput = document.getElementById('logo-file');
+const logoUrlInput = document.getElementById('logo-url');
+const logoUrlMsg = document.getElementById('logo-url-msg');
+const btnApplyUrl = document.getElementById('btn-apply-url');
 const btnResetLogo = document.getElementById('btn-reset-logo');
 const imageUploadPreview = document.getElementById('image-upload-preview');
 
@@ -275,15 +277,12 @@ function loadSettings() {
             if (settings.themePreset === 'neon-cyber') {
                 settings.themePreset = 'cream-gold';
             }
-            // Migrate social settings if they are still the default placeholders
-            if (settings.socials.twitch === "YourChannel" || !settings.socials.twitch) {
-                settings.socials.twitch = "FolkFirebrand";
+            // Migrate legacy placeholder values to empty so they don't display
+            if (settings.socials.twitch === "YourChannel") {
+                settings.socials.twitch = "";
             }
-            if (!settings.socials.instagram && (settings.socials.twitter === "YourXHandle" || !settings.socials.twitter)) {
-                settings.socials.instagram = "@folkfirebrand";
-            }
-            if (settings.socials.youtube === "YourYouTube" || !settings.socials.youtube) {
-                settings.socials.youtube = "@folkfirebrand";
+            if (settings.socials.youtube === "YourYouTube") {
+                settings.socials.youtube = "";
             }
             if (settings.socials.discord === "discord.gg/invite") {
                 settings.socials.discord = "";
@@ -507,23 +506,116 @@ function applySettingsToUI() {
 }
 
 /* ==========================================================================
-   3. File Upload handling
+   3. Bouncer Image handling (URL + drag-and-drop)
+   --------------------------------------------------------------------------
+   The Streamlabs/OBS CEF "Interact" window does not open native file dialogs
+   (same limitation as native <select> dropdowns), so there is no file-picker
+   button. Images are set by pasting an image URL or dragging a file onto the
+   preview box — both work inside the interact window.
    ========================================================================== */
-logoFileInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            settings.customLogoUrl = event.target.result;
-            // Update preview card immediately
-            imageUploadPreview.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
-            // Trigger logo update
-            customLogo.src = event.target.result;
-            customLogo.style.display = 'block';
-            defaultLogo.style.display = 'none';
-        };
-        reader.readAsDataURL(file);
+
+// Apply a logo image source (data URL or http URL) everywhere it's shown.
+function applyCustomLogo(src) {
+    if (!src) return;
+    settings.customLogoUrl = src;
+    imageUploadPreview.innerHTML = `<img src="${src}" alt="Preview">`;
+    customLogo.src = src;
+    customLogo.style.display = 'block';
+    defaultLogo.style.display = 'none';
+}
+
+// Read an image File and apply it as a data URL.
+function applyLogoFile(file) {
+    if (!file || !file.type.startsWith('image/')) return;
+    const reader = new FileReader();
+    reader.onload = (event) => applyCustomLogo(event.target.result);
+    reader.readAsDataURL(file);
+}
+
+// Path A: image URL (works inside the CEF interact window).
+
+// Show / hide the small status line under the URL field.
+function setLogoUrlMsg(text, isError) {
+    if (!text) {
+        logoUrlMsg.hidden = true;
+        logoUrlMsg.textContent = "";
+        return;
     }
+    logoUrlMsg.hidden = false;
+    logoUrlMsg.textContent = text;
+    logoUrlMsg.classList.toggle('is-error', !!isError);
+}
+
+// Clean up pasted input. Handles the common Windows "Copy as path" case,
+// which yields a quote-wrapped local path like "C:\Users\me\logo.png".
+function normalizeImageSource(raw) {
+    let src = (raw || "").trim();
+    // Strip a single pair of surrounding quotes (straight or smart).
+    src = src.replace(/^["'“‘]+|["'”’]+$/g, "").trim();
+    // Convert a bare Windows path (drive letter or UNC) into a file:// URL.
+    if (/^[a-zA-Z]:[\\/]/.test(src)) {
+        src = 'file:///' + src.replace(/\\/g, '/');
+    } else if (/^\\\\/.test(src)) {
+        src = 'file:' + src.replace(/\\/g, '/');
+    }
+    return src;
+}
+
+function applyLogoUrl() {
+    const src = normalizeImageSource(logoUrlInput.value);
+    if (!src) {
+        setLogoUrlMsg("Paste an image URL (or drag an image onto the box).", true);
+        return;
+    }
+    logoUrlInput.value = src; // reflect the cleaned-up value back to the user
+    setLogoUrlMsg("Loading…", false);
+    // Validate by probe-loading before committing it to the bouncer.
+    const probe = new Image();
+    probe.onload = () => {
+        applyCustomLogo(src);
+        setLogoUrlMsg("");
+    };
+    probe.onerror = () => {
+        const looksLocal = src.startsWith('file:');
+        setLogoUrlMsg(
+            looksLocal
+                ? "Couldn't load that local file — browser sources usually block local paths. Upload the image online (e.g. imgur.com) and paste that URL instead."
+                : "Couldn't load that image. Check the URL points directly to a .png/.jpg/.gif file.",
+            true
+        );
+    };
+    probe.src = src;
+}
+btnApplyUrl.addEventListener('click', applyLogoUrl);
+logoUrlInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        applyLogoUrl();
+    }
+});
+
+// Path B: drag-and-drop a file onto the preview box (works in interact window).
+['dragenter', 'dragover'].forEach((evt) => {
+    imageUploadPreview.addEventListener(evt, (e) => {
+        e.preventDefault();
+        imageUploadPreview.classList.add('drag-over');
+    });
+});
+['dragleave', 'dragend', 'drop'].forEach((evt) => {
+    imageUploadPreview.addEventListener(evt, (e) => {
+        e.preventDefault();
+        imageUploadPreview.classList.remove('drag-over');
+    });
+});
+imageUploadPreview.addEventListener('drop', (e) => {
+    const file = e.dataTransfer && e.dataTransfer.files[0];
+    if (file) {
+        applyLogoFile(file);
+        return;
+    }
+    // Some sources provide a URL instead of a file (e.g. dragging from a browser).
+    const url = e.dataTransfer && e.dataTransfer.getData('text/uri-list');
+    if (url) applyCustomLogo(url.trim());
 });
 
 btnResetLogo.addEventListener('click', () => {
@@ -531,7 +623,8 @@ btnResetLogo.addEventListener('click', () => {
     customLogo.style.display = 'none';
     defaultLogo.style.display = 'block';
     imageUploadPreview.innerHTML = `<img src="${settings.defaultImage || 'default-logo.png'}" alt="Preview">`;
-    logoFileInput.value = ""; // clear selector input
+    logoUrlInput.value = "";
+    setLogoUrlMsg("");
 });
 
 /* ==========================================================================

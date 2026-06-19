@@ -9,6 +9,14 @@ Thumbs.db
 *.sln
 *.swp
 
-# Don't accidentally commit personal images
-# (remove the line below if you want to commit your custom logo)
+# Personal overrides — keep the public build generic
+# config.local.js holds your real socials/branding and loads on top of config.js
+config.local.js
+
+# Your personal branding image (the generic build ships default-logo.png instead)
+FFNEW.png
+
+# Don't accidentally commit other personal images
+# (uncomment to ignore every PNG except the generic placeholder)
 # *.png
+# !default-logo.png

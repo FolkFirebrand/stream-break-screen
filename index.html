@@ -50,7 +50,7 @@
                     </div>
                     <div class="social-text">
                         <span id="social-platform" class="social-platform">TWITCH</span>
-                        <span id="social-handle" class="social-handle">FolkFirebrand</span>
+                        <span id="social-handle" class="social-handle"></span>
                     </div>
                 </div>
             </div>
@@ -87,17 +87,19 @@
                 <div class="settings-group">
                     <h3><i class="fas fa-image"></i> Bouncer Image</h3>
                     <div class="image-upload-wrapper">
-                        <div class="image-preview" id="image-upload-preview">
+                        <div class="image-preview image-dropzone" id="image-upload-preview" title="Drag an image file here">
                             <img src="default-logo.png" alt="Preview">
                         </div>
                         <div class="upload-buttons">
-                            <label class="btn btn-primary" for="logo-file">
-                                <i class="fas fa-upload"></i> Upload JPG/PNG
-                            </label>
-                            <input type="file" id="logo-file" accept="image/*" style="display: none;">
+                            <p class="image-drop-hint">Drag &amp; drop an image file onto the box, or paste an image URL below.</p>
                             <button id="btn-reset-logo" class="btn btn-secondary">Reset to Default Image</button>
                         </div>
                     </div>
+                    <div class="image-url-row">
+                        <input type="text" id="logo-url" class="text-input" placeholder="https://example.com/logo.png" autocomplete="off" spellcheck="false">
+                        <button id="btn-apply-url" class="btn btn-primary">Load URL</button>
+                    </div>
+                    <p class="image-url-msg" id="logo-url-msg" hidden></p>
                 </div>
 
                 <!-- Section 2: Physics Parameters -->
@@ -166,7 +168,7 @@
                             <label><input type="checkbox" id="show-twitch" checked> Show Twitch</label>
                             <div class="social-field">
                                 <i class="fab fa-twitch text-twitch"></i>
-                                <input type="text" id="social-twitch" placeholder="Twitch username" value="FolkFirebrand">
+                                <input type="text" id="social-twitch" placeholder="Twitch username" value="">
                             </div>
                         </div>
                         <div class="social-field-wrap">
@@ -180,14 +182,14 @@
                             <label><input type="checkbox" id="show-instagram" checked> Show Instagram</label>
                             <div class="social-field">
                                 <i class="fab fa-instagram text-instagram"></i>
-                                <input type="text" id="social-instagram" placeholder="Instagram username" value="@folkfirebrand">
+                                <input type="text" id="social-instagram" placeholder="Instagram username" value="">
                             </div>
                         </div>
                         <div class="social-field-wrap">
                             <label><input type="checkbox" id="show-youtube" checked> Show YouTube</label>
                             <div class="social-field">
                                 <i class="fab fa-youtube text-youtube"></i>
-                                <input type="text" id="social-youtube" placeholder="YouTube Channel" value="@folkfirebrand">
+                                <input type="text" id="social-youtube" placeholder="YouTube Channel" value="">
                             </div>
                         </div>
                         <div class="social-field-wrap">
@@ -292,6 +294,8 @@
 
     <!-- Script Entry -->
     <script src="config.js"></script>
+    <!-- Optional personal overrides. Ignored by Git; absent in the public build. -->
+    <script src="config.local.js" onerror="this.remove()"></script>
     <script src="app.js"></script>
 </body>
 </html>
